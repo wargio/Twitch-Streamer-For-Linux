@@ -27,6 +27,8 @@ int default_src = 0;
 Window Select_Window();
 
 void InitializeX11(uint16_t x_off, uint16_t y_off, uint16_t *w, uint16_t *h){
+	printf("Loading X11 Module\n");
+
 	dpy = XOpenDisplay("");
 
 	default_src = XDefaultScreen(dpy);
@@ -69,14 +71,16 @@ void InitializeX11(uint16_t x_off, uint16_t y_off, uint16_t *w, uint16_t *h){
 #ifdef X11_USE_XSHM_
 	}
 #endif /*X11_USE_XSHM_*/
+	printf("X11 Module Running\n");
 }
 
 void StopX11(){
 	XCloseDisplay(dpy);
 	XFree(image);
+	printf("Closing X11 Module\n");
 }
 
-uint32_t *GetX11(uint16_t x, uint16_t y, uint16_t w, uint16_t h){
+uint32_t *GetX11(uint16_t x, uint16_t y, uint16_t *w, uint16_t *h){
 	xGetImageReply rep;
 	xGetImageReq *req;
 	long nbytes;
@@ -84,12 +88,15 @@ uint32_t *GetX11(uint16_t x, uint16_t y, uint16_t w, uint16_t h){
 	if(!image){
 		return 0;
 	}
+	XGetWindowAttributes(dpy, CaptureWin, &gwa);
 
-	if(image->width != w || image->height != h){
+	if(image->width != gwa.width || image->height != gwa.height){
+		printf("X11 Window: Changed W/H\n");
+		*w = gwa.width;
+		*h = gwa.height;
 		XFree(image);
 #ifdef X11_USE_XSHM_
 		if(use_shm) {
-			printf("Changed Screen W/H;\n");
 			int scr = XDefaultScreen(dpy);
 			image = XShmCreateImage(dpy,
 						DefaultVisual(dpy, scr),
@@ -117,13 +124,14 @@ uint32_t *GetX11(uint16_t x, uint16_t y, uint16_t w, uint16_t h){
 #endif /*X11_USE_XSHM_*/
 			image = XGetImage(dpy, CaptureWin,
 					  x,y,
-					  w,h,
+					  gwa.width,gwa.height,
 					  AllPlanes, ZPixmap);
 #ifdef X11_USE_XSHM_
 		}
 #endif /*X11_USE_XSHM_*/
 	}
-	XGetWindowAttributes(dpy, CaptureWin, &gwa);
+
+	/* Here i should add a check to be sure that the window is still open */
 	LockDisplay(dpy);
 	GetReq(GetImage, req);
 

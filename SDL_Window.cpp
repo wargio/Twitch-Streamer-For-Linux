@@ -38,11 +38,13 @@ void InitializeSDL(){
 		WOBuffer = (uint8_t*) malloc(WebCamWidth*WebCamHeight*sizeof(uint32_t));
 		printf("Software Rescale for Webcam Enabled!\n");
 	}
+	InitializePulse();
 }
 
 void StopSDL(){
 	if(sw_rescale)
 		free(WOBuffer);
+	StopPulse();
 	StopV4L();
 	StopX11();
 	SDL_FreeSurface(screen);
@@ -130,7 +132,7 @@ static inline void DrawWebcam(){
 
 static inline void ResizeBuffer(){
 	uint32_t *Target = (uint32_t *)screen->pixels;
-	uint32_t *Source = GetX11(X11XOffset, X11YOffset, X11Width, X11Height);
+	uint32_t *Source = GetX11(X11XOffset, X11YOffset, &X11Width, &X11Height);
 	if(Source == NULL)
 		return;
 
@@ -169,6 +171,7 @@ int Flip(){
 	}
 	ResizeBuffer();
 	DrawWebcam();
+	AudioLoop();
 
 	SDL_Flip(screen);
 	return 1;

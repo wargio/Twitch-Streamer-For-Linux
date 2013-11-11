@@ -1,5 +1,5 @@
-#ifndef __TWITCH_WEBCAM_STUFF_H__
-#define __TWITCH_WEBCAM_STUFF_H__
+#ifndef __TWITCH_WEBCAM_MODULE_H__
+#define __TWITCH_WEBCAM_MODULE_H__
 #include <stdint.h>
 
 void InitializeV4L(const char* device, uint16_t w, uint16_t h, int *check_changes);

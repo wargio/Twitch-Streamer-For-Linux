@@ -141,6 +141,7 @@ static inline void YUV2(uint8_t *rgb, uint8_t *yuv){
 
 
 void InitializeV4L(const char* device, uint16_t w, uint16_t h, int *check_changes){
+	printf("Loading Video4Linux Module\n");
 
 	if(!device_exist(device)){
 		printf("Webcam %s do not exist. Webcam is disable!\n",device);
@@ -238,6 +239,7 @@ void InitializeV4L(const char* device, uint16_t w, uint16_t h, int *check_change
 			xioctl(fd, VIDIOC_STREAMON, &type);
 		}
 	}
+	printf("Video4Linux Module Running\n");
 }
 
 void StopV4L(){
@@ -249,6 +251,7 @@ void StopV4L(){
                 munmap(buffers[i].start, buffers[i].length);
         close(fd);
 	free(fb);
+	printf("Closing Video4Linux Module\n");
 }
 
 void GetWebcamInfo(uint16_t *w, uint16_t *h){
