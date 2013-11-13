@@ -4,8 +4,9 @@
 #include "X11_Device.h"
 #include "Webcam_Device.h"
 #include "Pulse.h"
+#include "LibAV.h"
 
-void InitializeSDL();
+void InitializeSDL(const char* twitch_key);
 void StopSDL();
 int  Flip();
 

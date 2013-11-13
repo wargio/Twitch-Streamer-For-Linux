@@ -1,10 +1,12 @@
-Twitch Streamer For Linux (WORK IN PROGRESS)
-============================================
+Twitch Streamer For Linux
+=========================
 
 Twitch Streamer For Linux written in C/CPP
 
 
-THIS IS A WORK IN PROGRESS. (NOW) IT DOESN'T DO WHAT THE TITLE SAYS.
+THIS IS A WORK IN PROGRESS.
+
+it's 90% done. it has all the things that should allow the streaming, but IT DOESN'T WORK.
 
 Authors:
 --------

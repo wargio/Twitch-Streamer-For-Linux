@@ -20,7 +20,7 @@ uint16_t X11YOffset_web = 0;
 int      sw_rescale = 0;
 uint8_t  *WOBuffer = NULL; //WebcamOverlayBuffer
 
-void InitializeSDL(){
+void InitializeSDL(const char* twitch_key){
 	if(SDL_Init(SDL_INIT_EVERYTHING)) {
 		fprintf(stderr, "Could not initialize SDL - %s\n", SDL_GetError());
 		exit(1);
@@ -39,11 +39,13 @@ void InitializeSDL(){
 		printf("Software Rescale for Webcam Enabled!\n");
 	}
 	InitializePulse();
+	InitializeLibAV(FBWidth, FBHeight, twitch_key, (uint32_t*)screen->pixels);
 }
 
 void StopSDL(){
 	if(sw_rescale)
 		free(WOBuffer);
+	StopLibAV();
 	StopPulse();
 	StopV4L();
 	StopX11();
@@ -172,6 +174,7 @@ int Flip(){
 	ResizeBuffer();
 	DrawWebcam();
 	AudioLoop();
+	MuxingLoop();
 
 	SDL_Flip(screen);
 	return 1;
